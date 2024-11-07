@@ -12,15 +12,23 @@ public class Player : MonoBehaviour
     //4. optional: give it an initial value
 
     private float horizontalInput;
+    private float verticalInput;
     private float speed;
-    private int lives;
+    private float horizontalScreenLimit;
+    private float verticalScreenLimit;
 
+    public GameObject explosion;
     public GameObject Bullet;
+
+    private int lives;
 
     // Start is called before the first frame update
     void Start()
     {
         speed = 6f;
+        horizontalScreenLimit = 11.5f;
+        verticalScreenLimit = 7.5f;
+        lives = 3;
     }
 
     void Update()
@@ -34,14 +42,20 @@ public class Player : MonoBehaviour
     {
         // Player can only move horizontally, Starting Y position set in GameManager
         horizontalInput = Input.GetAxis("Horizontal");
-        transform.Translate(new Vector3(horizontalInput, 0, 0) * Time.deltaTime * speed);
+        verticalInput = Input.GetAxis("Vertical");
+        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * Time.deltaTime * speed);
+
 
         //if the player moves off camera
-        if (transform.position.x > 11.5f || transform.position.x <= -11.5f)
+        if (transform.position.x > horizontalScreenLimit || transform.position.x <= -horizontalScreenLimit)
         {
             //On the X plane, move them to the other side of the screen
             transform.position = new Vector3(transform.position.x * -1, transform.position.y, 0);
+        }
 
+        if (transform.position.y > verticalScreenLimit || transform.position.y <= -verticalScreenLimit)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y * -1, 0);
         }
     }
 
@@ -50,12 +64,19 @@ public class Player : MonoBehaviour
         // Pressing space spawns a bullet which moves upwards along Y
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
             Instantiate(Bullet, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
-
         }
-
     }
 
-
+    public void LoseALife()
+    {
+        //lives = lives -1;
+        //lives -= 1;
+        lives--;
+        if (lives ==0)
+        {
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
+    }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+
+    public GameObject explosion;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -13,12 +16,22 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Enemy will move down the screen
-        transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 3f);
-        //Enemy will be destroyed once off screen
-        if (transform.position.y < -8f)
+        
+    }
+
+    private void OnTriggerEnter2D(Collider2D whatDidIHit)
+    {
+       if (whatDidIHit.tag == "Player")
         {
+            GameObject.Find("Player(Clone)").GetComponent<Player>().LoseALife();
+            Instantiate(explosion, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
+        } else if (whatDidIHit.tag == "Weapon")
+        {
+            Destroy(whatDidIHit.gameObject);
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+            GameObject.Find("GameManager").GetComponent<GameManager>().EarnScore(5);
         }
     }
 }
