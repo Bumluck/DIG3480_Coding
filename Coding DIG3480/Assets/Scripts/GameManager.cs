@@ -11,17 +11,26 @@ public class GameManager : MonoBehaviour
     public GameObject enemy;
     public GameObject coin;
     public GameObject cloud;
+    
     private int score;
 
-    public TextMeshProUGUI scoreText; 
+    public TextMeshProUGUI scoreText;
+
+    public TextMeshProUGUI livesText;
+
     // Start is called before the first frame update
     void Start()
     {
-        //Create and set the players Y to -3 and repeat void CreateEnemy
-        Instantiate(player, transform.position = new Vector3(0, -3, 0), Quaternion.identity);
+        // Instantiate the Player at position (0, -3, 0) and store the new instance in the "playerInstance" variable
+        GameObject playerInstance = Instantiate(player, new Vector3(0, -3, 0), Quaternion.identity);
+        
+        //Gets Player Component and sets Player.cs "livesText" equal to GameManager.cs "livesText"
+        playerInstance.GetComponent<Player>().livesText = livesText;
+
         InvokeRepeating("CreateEnemy", 1f, 3f);
         InvokeRepeating("CreateCoin", 1f, 7f);
         CreateSky();
+        
         score = 0;
         scoreText.text = "Score: " + score;
     }

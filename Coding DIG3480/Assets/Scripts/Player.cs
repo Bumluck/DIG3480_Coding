@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -16,11 +17,13 @@ public class Player : MonoBehaviour
     private float speed;
     private float horizontalScreenLimit;
     private float verticalScreenLimit;
+    
+    private int lives;
 
     public GameObject explosion;
     public GameObject Bullet;
-
-    private int lives;
+    
+    public TextMeshProUGUI livesText;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +31,9 @@ public class Player : MonoBehaviour
         speed = 6f;
         horizontalScreenLimit = 11.5f;
         verticalScreenLimit = 7.5f;
+        
         lives = 3;
+        UpdateLivesText();
     }
 
     void Update()
@@ -68,11 +73,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    void UpdateLivesText()
+    {
+        livesText.text = "Lives: " + lives;
+    }
+
     public void LoseALife()
     {
         //lives = lives -1;
         //lives -= 1;
         lives--;
+        UpdateLivesText();
+
         if (lives ==0)
         {
             Instantiate(explosion, transform.position, Quaternion.identity);
