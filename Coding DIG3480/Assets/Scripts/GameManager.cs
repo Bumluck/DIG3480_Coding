@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,12 +12,20 @@ public class GameManager : MonoBehaviour
     public GameObject enemy;
     public GameObject coin;
     public GameObject cloud;
-    
-    private int score;
+    public GameObject powerup;
+
+    public int cloudSpeed;
+
+    private bool isPlayerAlive;
 
     public TextMeshProUGUI scoreText;
-
     public TextMeshProUGUI livesText;
+    public TextMeshProUGUI GameOverText;
+    public TextMeshProUGUI RestartText;
+    public TextMeshProUGUI powerupText;
+
+    private int score;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,16 +38,19 @@ public class GameManager : MonoBehaviour
 
         InvokeRepeating("CreateEnemy", 1f, 3f);
         InvokeRepeating("CreateCoin", 1f, 7f);
+        StartCoroutine(CreatePowerup());
         CreateSky();
         
         score = 0;
         scoreText.text = "Score: " + score;
+        cloudSpeed = 1;
+        isPlayerAlive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        Restart();
     }
 
 
@@ -51,6 +63,20 @@ public class GameManager : MonoBehaviour
     void CreateCoin()
     {
         Instantiate(coin, new Vector3(-11f, Random.Range(-4f, 4f), 0), Quaternion.identity);
+    }
+
+    IEnumerator CreatePowerup()
+    {
+        if (isPlayerAlive == true)
+        {
+            Instantiate(powerup, new Vector3(Random.Range(-9f, 9f), 7.5f, 0), Quaternion.identity);
+            yield return new WaitForSeconds(Random.Range(4f, 7f));
+            StartCoroutine(CreatePowerup());
+        }
+        else if (isPlayerAlive == false)
+        {
+
+        }
     }
 
     void CreateSky()
@@ -67,5 +93,26 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Score: " + score;
     }
 
+    public void GameOver()
+    {
+        isPlayerAlive = false;
+        CancelInvoke();
+        GameOverText.gameObject.SetActive(true);
+        RestartText.gameObject.SetActive(true);
+        cloudSpeed = 0;
+    }
 
+    void Restart()
+    {
+
+        if(Input.GetKeyDown(KeyCode.R) && isPlayerAlive == false)
+        {
+            //Restart the game
+            SceneManager.LoadScene("Game");
+        }
+    }
+    public void UpdatePowerupText(string whichPowerup)
+    {
+        powerupText.text = whichPowerup;
+    }
 }
