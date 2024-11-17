@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     public GameObject cloud;
     public GameObject powerup;
 
+    public AudioClip powerUp;
+    public AudioClip powerDown;
+    
     public int cloudSpeed;
 
     private bool isPlayerAlive;
@@ -38,13 +41,14 @@ public class GameManager : MonoBehaviour
 
         InvokeRepeating("CreateEnemy", 1f, 3f);
         InvokeRepeating("CreateCoin", 1f, 7f);
+
+        isPlayerAlive = true;
         StartCoroutine(CreatePowerup());
         CreateSky();
         
         score = 0;
         scoreText.text = "Score: " + score;
         cloudSpeed = 1;
-        isPlayerAlive = true;
     }
 
     // Update is called once per frame
@@ -114,5 +118,15 @@ public class GameManager : MonoBehaviour
     public void UpdatePowerupText(string whichPowerup)
     {
         powerupText.text = whichPowerup;
+    }
+
+    public void PlayPowerUp()
+    {
+        AudioSource.PlayClipAtPoint(powerUp, Camera.main.transform.position);
+    }
+
+    public void PlayPowerDown()
+    {
+        AudioSource.PlayClipAtPoint(powerDown, Camera.main.transform.position);
     }
 }

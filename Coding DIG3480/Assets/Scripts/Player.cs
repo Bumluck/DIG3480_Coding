@@ -137,6 +137,7 @@ public class Player : MonoBehaviour
         speed = 6f;
         thruster.gameObject.SetActive(false);
         gameManager.UpdatePowerupText("");
+        gameManager.PlayPowerDown();
     }
 
     IEnumerator ShootingPowerDown()
@@ -145,6 +146,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(4f);
         shooting = 1;
         gameManager.UpdatePowerupText("");
+        gameManager.PlayPowerDown();
     }
 
     IEnumerator ShieldPowerDown()
@@ -154,12 +156,14 @@ public class Player : MonoBehaviour
         shield.gameObject.SetActive(false);
         gameManager.UpdatePowerupText("");
         hasShield = false;
+        gameManager.PlayPowerDown();
     }
 
     private void OnTriggerEnter2D(Collider2D whatIHit)
     {
         if(whatIHit.tag == "Powerup")
         {
+            gameManager.PlayPowerUp();
             int powerupType = Random.Range(1, 5);
             switch(powerupType)
             {
